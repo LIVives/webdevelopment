@@ -1,10 +1,1434 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Web Development I</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Labo-opdrachten Home Page</title>
+    <script>
+        document.documentElement.classList.add('js');
+        (function () {
+            var t;
+            try { t = localStorage.getItem('labo-thema'); } catch (e) {}
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'donker' : 'licht';
+            document.documentElement.setAttribute('data-thema', t);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rood: #E40613;
+            --rood-donker: #B8050F;
+            --inkt: #1E2126;
+            --papier: #F3F3F0;
+            --wit: #FFFFFF;
+            --grijs: #6B7078;
+            --lijn: #DEDFDA;
+            --uit: cubic-bezier(.2, .8, .2, 1);
+
+            /* Thema-tokens: licht is standaard */
+            --pagina: var(--papier);
+            --opp: var(--wit);
+            --opp-zacht: var(--papier);
+            --tekst: var(--inkt);
+            --tekst-zwak: var(--grijs);
+            --rand: var(--lijn);
+            --nav-bg: rgba(255, 255, 255, .92);
+            --schaduw1: rgba(30, 33, 38, .06);
+            --schaduw2: rgba(30, 33, 38, .06);
+            --schaduw-hover1: rgba(30, 33, 38, .08);
+            --schaduw-hover2: rgba(30, 33, 38, .13);
+            color-scheme: light;
+        }
+
+        html[data-thema="donker"] {
+            --pagina: #131519;
+            --opp: #1D2024;
+            --opp-zacht: rgba(255, 255, 255, .06);
+            --tekst: #ECEDEF;
+            --tekst-zwak: #9298A1;
+            --rand: rgba(255, 255, 255, .09);
+            --nav-bg: rgba(19, 21, 25, .82);
+            --schaduw1: rgba(0, 0, 0, .35);
+            --schaduw2: rgba(0, 0, 0, .35);
+            --schaduw-hover1: rgba(0, 0, 0, .45);
+            --schaduw-hover2: rgba(0, 0, 0, .55);
+            color-scheme: dark;
+        }
+
+        /* Cirkelvormige overgang bij het wisselen van thema */
+        ::view-transition-old(root), ::view-transition-new(root) {
+            animation: none;
+            mix-blend-mode: normal;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+
+        body {
+            font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+            background: var(--pagina);
+            color: var(--tekst);
+            line-height: 1.6;
+            transition: background .35s ease, color .35s ease;
+        }
+
+        h1, h2, .chip, .nav a, .nummer {
+            font-family: "Outfit", "Segoe UI", Arial, sans-serif;
+        }
+
+        a:focus-visible, summary:focus-visible {
+            outline: 3px solid var(--rood);
+            outline-offset: 3px;
+        }
+
+        /* ---------- Animaties ---------- */
+        @keyframes op      { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+        @keyframes regel   { from { transform: translateY(108%); } to { transform: none; } }
+        @keyframes vlak    { from { transform: translateX(70%); } to { transform: none; } }
+        @keyframes stippen { to { background-position: 26px 26px; } }
+        @keyframes pop     { from { opacity: 0; transform: translateY(12px) scale(.88); } to { opacity: 1; transform: none; } }
+
+        /* Tijdelijk aan om de intro opnieuw te laten starten (zie script) */
+        .opnieuw .hero::before,
+        .opnieuw .school,
+        .opnieuw .regel > span,
+        .opnieuw .hero p { animation: none; }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            background: var(--inkt);
+            color: var(--wit);
+        }
+
+        /* Rood vlak schuift binnen en beweegt licht mee met de muis */
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0; right: -40px; bottom: 0;
+            width: calc(40% + 40px);
+            background: var(--rood);
+            clip-path: polygon(34% 0, 100% 0, 100% 100%, 0 100%);
+            translate: calc(var(--mx, 0) * -34px) 0;
+            transition: translate .35s ease-out;
+            animation: vlak 1s var(--uit) backwards;
+        }
+
+        /* Puntenraster dat traag verschuift */
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,.14) 1.5px, transparent 1.5px);
+            background-size: 26px 26px;
+            -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 65%);
+            mask-image: linear-gradient(90deg, #000 0%, transparent 65%);
+            animation: stippen 6s linear infinite;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 84px 24px 76px;
+        }
+
+        .school {
+            display: inline-block;
+            background: var(--wit);
+            color: var(--rood);
+            font-family: "Outfit", sans-serif;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: .04em;
+            padding: 6px 16px;
+            border-radius: 4px;
+            margin-bottom: 26px;
+            animation: op .7s var(--uit) .05s backwards;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 9vw, 6rem);
+            font-weight: 900;
+            line-height: .98;
+            letter-spacing: -0.035em;
+        }
+
+        /* Elke titelregel schuift omhoog uit een masker */
+        .regel {
+            display: block;
+            overflow: hidden;
+            padding-bottom: .1em;
+            margin-bottom: -.1em;
+        }
+
+        .regel > span {
+            display: inline-block;
+            animation: regel .9s var(--uit) backwards;
+        }
+
+        .regel:nth-child(1) > span { animation-delay: .2s; }
+        .regel:nth-child(2) > span { animation-delay: .35s; }
+
+        .hero p {
+            margin-top: 20px;
+            max-width: 40ch;
+            color: #C9CBD0;
+            font-size: 1.15rem;
+            animation: op .8s var(--uit) .7s backwards;
+        }
+
+        /* ---------- Streepjesband: loopt altijd door, puur visueel ---------- */
+        .band {
+            height: 20px;
+            background: linear-gradient(135deg,
+            var(--rood-donker) 25%, var(--rood) 25% 50%,
+            var(--rood-donker) 50% 75%, var(--rood) 75%) 0 0 / 40px 40px;
+            animation: band 2.4s linear infinite;
+        }
+
+        @keyframes band { to { background-position: 40px 0; } }
+
+        /* ---------- Navigatie ---------- */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--nav-bg);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border-bottom: 4px solid var(--rood);
+        }
+
+        .nav-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav span {
+            color: var(--tekst-zwak);
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--tekst);
+            font-weight: 700;
+            font-size: .95rem;
+            padding: 5px 14px;
+            background: var(--opp-zacht);
+            border-radius: 999px;
+            transition: background .15s ease, color .15s ease, transform .2s var(--uit);
+        }
+
+        .nav a:hover {
+            background: var(--rood);
+            color: var(--wit);
+            transform: translateY(-2px);
+        }
+
+        /* ---------- Labo-blokken ---------- */
+        main {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 44px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .labo {
+            background: var(--opp);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px var(--schaduw1), 0 8px 24px var(--schaduw2);
+            transition: box-shadow .25s ease, transform .12s ease, background .35s ease;
+            transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+            will-change: transform;
+        }
+
+        .labo:hover {
+            box-shadow: 0 2px 4px var(--schaduw-hover1), 0 16px 34px var(--schaduw-hover2);
+        }
+
+        /* Blokken verschijnen één voor één bij het scrollen */
+        .js .labo:not(.zichtbaar) { opacity: 0; }
+        .js .labo.zichtbaar { animation: op .7s var(--uit) var(--d, 0s) backwards; }
+
+        .labo summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 24px 12px 8px;
+            background: var(--opp);
+            color: var(--tekst);
+            transition: background .25s ease, color .25s ease;
+        }
+
+        .labo summary::-webkit-details-marker { display: none; }
+
+        .nummer {
+            min-width: 112px;
+            text-align: center;
+            color: var(--rood);
+            font-size: clamp(3.4rem, 9vw, 5rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            transition: transform .4s cubic-bezier(.3, 1.6, .5, 1);
+        }
+
+        /* Cijfer wipt speels bij hover (alleen als het blok dicht is) */
+        .labo:not([open]) summary:hover .nummer {
+            transform: scale(1.12) rotate(-5deg);
+        }
+
+        .titel { flex: 1; }
+
+        .labo h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .aantal {
+            display: block;
+            color: var(--tekst-zwak);
+            font-size: .95rem;
+            transition: color .25s ease;
+        }
+
+        .pijl {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            flex: none;
+            border-radius: 50%;
+            background: var(--opp-zacht);
+            transition: background .25s ease;
+        }
+
+        .pijl::before {
+            content: "";
+            position: absolute;
+            left: 50%; top: 50%;
+            width: 10px; height: 10px;
+            border-right: 3px solid var(--inkt);
+            border-bottom: 3px solid var(--inkt);
+            transform: translate(-50%, -70%) rotate(45deg);
+            transition: transform .35s var(--uit), border-color .25s ease;
+        }
+
+        .labo summary:hover .pijl { background: var(--rood); }
+        .labo summary:hover .pijl::before { border-color: var(--wit); }
+
+        /* Geopend */
+        .labo[open] summary {
+            background: var(--inkt);
+            color: var(--wit);
+            padding-left: 0;
+        }
+
+        .labo[open] .nummer {
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--rood);
+            color: var(--wit);
+            min-width: 120px;
+        }
+
+        .labo[open] .aantal { color: #C9CBD0; }
+        .labo[open] .pijl { background: var(--rood); }
+        .labo[open] .pijl::before {
+            border-color: var(--wit);
+            transform: translate(-50%, -30%) rotate(-135deg);
+        }
+
+        .opdrachten {
+            overflow: hidden;
+            padding: 24px 28px 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background:
+                    linear-gradient(var(--rood), var(--rood)) top left / 100% 4px no-repeat,
+                    var(--opp);
+        }
+
+        /* ---------- Kleine knoppen ---------- */
+        .chip {
+            display: inline-block;
+            background: var(--rood);
+            color: var(--wit);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: .92rem;
+            padding: 6px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--rood);
+            transition: transform .2s var(--uit), box-shadow .2s ease, background .15s ease, border-color .15s ease;
+        }
+
+        /* Knoppen poppen na elkaar op zodra een labo opent */
+        .labo[open] .chip {
+            animation: pop .45s var(--uit) backwards;
+            animation-delay: calc(var(--i, 0) * 45ms + 120ms);
+        }
+
+        .chip:hover {
+            background: var(--rood-donker);
+            border-color: var(--rood-donker);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(228, 6, 19, .28);
+        }
+
+        .chip:active { transform: translateY(0) scale(.96); }
+
+        .chip.extra {
+            background: var(--opp);
+            color: var(--tekst);
+            border-color: var(--tekst);
+        }
+
+        .chip.extra:hover {
+            background: var(--tekst);
+            color: var(--opp);
+            border-color: var(--tekst);
+            box-shadow: 0 6px 12px var(--schaduw-hover1);
+        }
+
+        /* ---------- Zoekknop in de navigatie ---------- */
+        .zoek {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font: 600 .95rem "Outfit", "Segoe UI", Arial, sans-serif;
+            color: var(--tekst-zwak);
+            background: var(--opp-zacht);
+            border: 2px solid transparent;
+            border-radius: 999px;
+            padding: 4px 6px 4px 16px;
+            cursor: pointer;
+            transition: border-color .2s ease, color .2s ease, transform .2s var(--uit);
+        }
+
+        .zoek:hover { border-color: var(--rood); color: var(--tekst); transform: translateY(-2px); }
+
+        .zoek kbd {
+            font: 700 .75rem "Outfit", "Segoe UI", Arial, sans-serif;
+            background: var(--opp);
+            color: var(--tekst);
+            border-radius: 999px;
+            padding: 3px 10px;
+            box-shadow: 0 1px 0 var(--rand);
+        }
+
+        @media (hover: none) { .zoek kbd { display: none; } .zoek { padding-right: 16px; } }
+
+        /* ---------- Voortgang per labo ---------- */
+        .labo summary { position: relative; }
+
+        .labo summary::after {
+            content: "";
+            position: absolute;
+            left: 0; bottom: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--rood);
+            transform: scaleX(var(--v, 0));
+            transform-origin: left;
+            transition: transform .9s var(--uit);
+        }
+
+        .chip.bekeken::before { content: "\2713"; margin-right: 6px; font-weight: 900; }
+
+        /* ---------- Zoekpalet (Ctrl+K of /) ---------- */
+        .palet {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 14vh 16px 16px;
+            background: rgba(30, 33, 38, .55);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+        }
+
+        .palet.open { display: flex; animation: vervaag .2s ease; }
+
+        .palet-doos {
+            width: min(620px, 100%);
+            background: var(--opp);
+            border-radius: 18px;
+            border-top: 5px solid var(--rood);
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .4);
+            animation: zak .35s var(--uit);
+        }
+
+        .palet input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            padding: 20px 22px;
+            font: 600 1.15rem "Outfit", "Segoe UI", Arial, sans-serif;
+            color: var(--tekst);
+            background: var(--opp);
+        }
+
+        .palet input::placeholder { color: var(--tekst-zwak); }
+
+        .palet-lijst {
+            list-style: none;
+            max-height: min(50vh, 380px);
+            overflow: auto;
+            padding: 8px;
+            border-top: 1px solid var(--rand);
+        }
+
+        .palet-lijst a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--tekst);
+        }
+
+        .palet-lijst .n {
+            min-width: 34px;
+            text-align: center;
+            font: 900 1.5rem "Outfit", "Segoe UI", Arial, sans-serif;
+            color: var(--rood);
+        }
+
+        .palet-lijst .t { flex: 1; font-weight: 600; line-height: 1.25; }
+        .palet-lijst .t small { display: block; color: var(--tekst-zwak); font-weight: 400; font-size: .85rem; }
+        .palet-lijst .v { font-weight: 900; color: var(--rood); }
+
+        .palet-lijst a[aria-selected="true"] { background: var(--inkt); color: var(--wit); }
+        .palet-lijst a[aria-selected="true"] .t small { color: #C9CBD0; }
+
+        .palet-lijst .leeg { padding: 26px; text-align: center; color: var(--grijs); }
+
+        .palet-voet {
+            display: flex;
+            gap: 18px;
+            padding: 10px 20px;
+            background: var(--opp-zacht);
+            border-top: 1px solid var(--rand);
+            color: var(--tekst-zwak);
+            font-size: .85rem;
+        }
+
+        @keyframes vervaag { from { opacity: 0; } }
+        @keyframes zak     { from { opacity: 0; transform: translateY(-18px) scale(.97); } }
+
+        /* ---------- Toast, confetti en code-regen (easter eggs) ---------- */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 28px;
+            z-index: 60;
+            max-width: calc(100% - 32px);
+            background: var(--inkt);
+            color: var(--wit);
+            border-left: 6px solid var(--rood);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font: 600 1rem "Outfit", "Segoe UI", Arial, sans-serif;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, .3);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 30px);
+            transition: opacity .3s ease, transform .45s var(--uit);
+        }
+
+        .toast.aan { opacity: 1; transform: translate(-50%, 0); }
+
+        .confetti {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 70;
+            pointer-events: none;
+        }
+
+        .regen {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .regen span {
+            position: absolute;
+            top: 0;
+            font: 800 1.2rem "Outfit", "Segoe UI", Arial, sans-serif;
+            color: rgba(255, 255, 255, .8);
+            will-change: transform;
+        }
+
+        .school { user-select: none; -webkit-user-select: none; }
+
+        .wis {
+            background: none;
+            border: 0;
+            color: inherit;
+            font: inherit;
+            text-decoration: underline;
+            cursor: pointer;
+            opacity: .65;
+        }
+
+        .wis:hover { opacity: 1; }
+
+        /* ---------- Thema-knop ---------- */
+        .thema-knop {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            background: var(--opp-zacht);
+            border: 2px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: border-color .2s ease, transform .2s var(--uit);
+        }
+
+        .thema-knop:hover { border-color: var(--rood); transform: translateY(-2px) rotate(-8deg); }
+
+        /* ---------- Live voorbeeld bij hover op een knop ---------- */
+        .voorbeeld {
+            position: fixed;
+            z-index: 40;
+            width: 300px;
+            background: var(--opp);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+            border: 1px solid var(--rand);
+            opacity: 0;
+            transform: scale(.92);
+            transform-origin: var(--oorsprong, 50% 100%);
+            pointer-events: none;
+            transition: opacity .16s ease, transform .16s ease;
+        }
+
+        .voorbeeld.zichtbaar { opacity: 1; transform: scale(1); }
+
+        .voorbeeld-kop {
+            padding: 8px 12px;
+            font: 700 .8rem "Outfit", "Segoe UI", Arial, sans-serif;
+            color: var(--tekst-zwak);
+            border-bottom: 1px solid var(--rand);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .voorbeeld-scherm {
+            width: 300px;
+            height: 187px;
+            overflow: hidden;
+            background: var(--opp-zacht);
+        }
+
+        .voorbeeld-scherm iframe {
+            width: 1200px;
+            height: 748px;
+            border: 0;
+            transform: scale(.25);
+            transform-origin: 0 0;
+            pointer-events: none;
+        }
+
+        /* ---------- Rode wipe bij het openen van een opdracht ---------- */
+        .wipe {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            background: var(--rood);
+            transform: scaleX(0);
+            transform-origin: left center;
+            pointer-events: none;
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            margin-top: 56px;
+            background: var(--inkt);
+            color: #C9CBD0;
+            border-top: 6px solid var(--rood);
+        }
+
+        .footer-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 26px 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: .95rem;
+        }
+
+        footer strong { color: var(--wit); font-weight: 600; }
+
+        @media (max-width: 640px) {
+            .hero::before { width: calc(22% + 40px); }
+            .hero-inner { padding: 52px 20px 48px; }
+            .labo summary { gap: 12px; padding-right: 16px; }
+            .nummer, .labo[open] .nummer { min-width: 76px; }
+            .labo h2 { font-size: 1.3rem; }
+            .opdrachten { padding: 20px 18px 22px; }
+        }
+
+        /* Wie liever geen beweging wil, krijgt een rustige pagina */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+            html { scroll-behavior: auto; }
+            .js .labo:not(.zichtbaar) { opacity: 1; }
+            .labo { transform: none !important; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Web Development I</h1>
+
+<header class="hero" id="hero">
+    <div class="hero-inner">
+        <span class="school">VIVES</span>
+        <h1><span class="regel"><span>Labo-</span></span><span class="regel"><span>opdrachten</span></span></h1>
+        <p>Kies een labo en klik op een opdracht om ze te openen.</p>
+    </div>
+</header>
+
+<div class="band" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Labo's">
+    <div class="nav-inner">
+        <span>Ga naar</span>
+        <a href="#labo2">Labo 2</a>
+        <a href="#labo3">Labo 3</a>
+        <button class="zoek" id="zoekKnop" type="button" aria-label="Zoek een opdracht">Zoek een opdracht <kbd>Ctrl K</kbd></button>
+        <button class="thema-knop" id="themaKnop" type="button" aria-label="Wissel tussen licht en donker thema">🌙</button>
+    </div>
+</nav>
+
+<main>
+
+    <!-- ===== LABO 2 ===== -->
+    <details class="labo" id="labo2">
+        <summary>
+            <span class="nummer" aria-hidden="true">2</span>
+            <span class="titel">
+                <h2>Labo 2</h2>
+                <span class="aantal">6 pagina's</span>
+            </span>
+            <span class="pijl" aria-hidden="true"></span>
+        </summary>
+        <div class="opdrachten">
+            <a class="chip" href="Labo2/Labo2_opdracht2.html">Opdracht 2</a>
+            <a class="chip" href="Labo2/Labo2_opdracht3.html">Opdracht 3</a>
+            <a class="chip" href="Labo2/Labo2_opdracht4.html">Opdracht 4</a>
+            <a class="chip" href="Labo2/Labo2_opdracht5.html">Opdracht 5</a>
+            <a class="chip" href="Labo2/Labo2_opdracht8.html">Opdracht 8</a>
+            <a class="chip" href="Labo2/voorbeeldHeadings.html">Opdracht 9</a>
+        </div>
+    </details>
+
+    <!-- ===== LABO 3 ===== -->
+    <details class="labo" id="labo3">
+        <summary>
+            <span class="nummer" aria-hidden="true">3</span>
+            <span class="titel">
+                <h2>Labo 3</h2>
+                <span class="aantal">1 pagina</span>
+            </span>
+            <span class="pijl" aria-hidden="true"></span>
+        </summary>
+        <div class="opdrachten">
+            <a class="chip" href="Labo3/Labo3_opdrachtX.html">Opdracht X</a>
+        </div>
+    </details>
+
+    <!--
+        NIEUW LABO TOEVOEGEN:
+        1. Kopieer een heel <details>-blok hierboven.
+        2. Wijzig id, cijfer, titel, aantal pagina's en de paden.
+        3. Voeg een link toe in de <nav> bovenaan.
+        (De animaties werken automatisch, je hoeft niets aan te passen.)
+    -->
+
+</main>
+
+<footer>
+    <div class="footer-inner">
+        <strong>Levente Iván</strong>
+        <span>Toegepaste Informatica, Vives Kortrijk</span>
+        <button class="wis" id="wisKnop" type="button">Voortgang wissen</button>
+    </div>
+</footer>
+
+
+<div class="palet" id="palet" aria-hidden="true">
+    <div class="palet-doos" role="dialog" aria-modal="true" aria-label="Zoek een opdracht">
+        <input id="paletInput" type="text" placeholder="Zoek een opdracht, bv. labo 2 opdracht 4" autocomplete="off" spellcheck="false" aria-label="Zoek een opdracht">
+        <ul class="palet-lijst" id="paletLijst" role="listbox"></ul>
+        <div class="palet-voet"><span>&uarr;&darr; kiezen</span><span>&crarr; openen</span><span>Esc sluiten</span></div>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="voorbeeld" id="voorbeeld" aria-hidden="true">
+    <div class="voorbeeld-kop" id="voorbeeldTitel">Voorbeeld</div>
+    <div class="voorbeeld-scherm">
+        <iframe id="voorbeeldFrame" tabindex="-1" title="Live voorbeeld"></iframe>
+    </div>
+</div>
+
+<div class="wipe" id="wipe" aria-hidden="true"></div>
+
+<script>
+    var minderBeweging = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Nummer per knop, zodat ze na elkaar kunnen opduiken
+    document.querySelectorAll('.labo').forEach(function (labo) {
+        labo.querySelectorAll('.chip').forEach(function (chip, i) {
+            chip.style.setProperty('--i', i);
+        });
+    });
+
+    // Zacht open- en dichtschuiven van een labo
+    function zetLabo(labo, open) {
+        var inhoud = labo.querySelector('.opdrachten');
+        if (labo._anim) labo._anim.cancel();
+        labo._doel = open;
+
+        if (minderBeweging) { labo.open = open; return; }
+
+        if (open) {
+            labo.open = true;
+            var cs = getComputedStyle(inhoud);
+            var hoogte = inhoud.offsetHeight + 'px';
+            var pt = cs.paddingTop, pb = cs.paddingBottom;
+            labo._anim = inhoud.animate([
+                { height: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 },
+                { height: hoogte, paddingTop: pt, paddingBottom: pb, opacity: 1 }
+            ], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+        } else {
+            var hoogteNu = inhoud.offsetHeight + 'px';
+            var cs2 = getComputedStyle(inhoud);
+            var anim = inhoud.animate([
+                { height: hoogteNu, paddingTop: cs2.paddingTop, paddingBottom: cs2.paddingBottom, opacity: 1 },
+                { height: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }
+            ], { duration: 300, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'forwards' });
+            labo._anim = anim;
+            anim.onfinish = function () {
+                labo.open = false;
+                anim.cancel();
+                labo._anim = null;
+            };
+        }
+    }
+
+    // Klik op de balk: open of sluit met animatie
+    document.querySelectorAll('.labo summary').forEach(function (summary) {
+        summary.addEventListener('click', function (e) {
+            e.preventDefault();
+            var labo = summary.parentElement;
+            var isOpen = (labo._doel === undefined) ? labo.open : labo._doel;
+            zetLabo(labo, !isOpen);
+        });
+    });
+
+    // Klik in de navigatie: open het juiste labo
+    document.querySelectorAll('.nav a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            var labo = document.querySelector(link.getAttribute('href'));
+            if (labo && !labo.open) zetLabo(labo, true);
+        });
+    });
+
+    // Link met #labo3 in de url opent dat labo meteen
+    if (location.hash) {
+        var doel = document.querySelector(location.hash);
+        if (doel && doel.tagName === 'DETAILS') doel.open = true;
+    }
+
+    // Labo-blokken faden in terwijl je naar beneden scrolt
+    var blokken = document.querySelectorAll('.labo');
+    var waarnemer = null;
+
+    function toonBlokken() {
+        if ('IntersectionObserver' in window) {
+            var teller = 0;
+            if (waarnemer) waarnemer.disconnect();
+            waarnemer = new IntersectionObserver(function (items) {
+                items.forEach(function (item) {
+                    if (item.isIntersecting) {
+                        item.target.style.setProperty('--d', (teller++ % 4) * 0.1 + 's');
+                        item.target.classList.add('zichtbaar');
+                        waarnemer.unobserve(item.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            blokken.forEach(function (b) { waarnemer.observe(b); });
+        } else {
+            blokken.forEach(function (b) { b.classList.add('zichtbaar'); });
+        }
+    }
+
+    toonBlokken();
+
+    // Intro opnieuw afspelen: elke keer dat je terug op het tabblad tikt,
+    // en ook als je met "terug" van een opdracht op de pagina komt
+    function speelIntroOpnieuw() {
+        if (minderBeweging) return;
+        var root = document.documentElement;
+        root.classList.add('opnieuw');
+        blokken.forEach(function (b) { b.classList.remove('zichtbaar'); });
+        void root.offsetWidth;
+        root.classList.remove('opnieuw');
+        toonBlokken();
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') speelIntroOpnieuw();
+    });
+
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) speelIntroOpnieuw();
+    });
+
+    // Rood vlak in de hero beweegt licht mee met de muis
+    var hero = document.getElementById('hero');
+    if (!minderBeweging && window.matchMedia('(hover: hover)').matches) {
+        hero.addEventListener('mousemove', function (e) {
+            var r = hero.getBoundingClientRect();
+            hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+        });
+        hero.addEventListener('mouseleave', function () {
+            hero.style.setProperty('--mx', 0);
+        });
+    }
+
+    /* =====================================================
+       EXTRA'S: voortgang, zoekpalet en easter eggs
+       ===================================================== */
+
+    // ----- Toast -----
+    var toastEl = document.getElementById('toast');
+    var toastT;
+    function toast(tekst, ms) {
+        toastEl.textContent = tekst;
+        toastEl.classList.add('aan');
+        clearTimeout(toastT);
+        toastT = setTimeout(function () { toastEl.classList.remove('aan'); }, ms || 3200);
+    }
+
+    // ----- Voortgang: welke opdrachten heb je al bekeken? -----
+    var BEWAAR_SLEUTEL = 'labo-bekeken';
+    function laadBekeken() {
+        try { return JSON.parse(localStorage.getItem(BEWAAR_SLEUTEL) || '[]'); } catch (e) { return []; }
+    }
+    function bewaarBekeken() {
+        try { localStorage.setItem(BEWAAR_SLEUTEL, JSON.stringify(bekeken)); } catch (e) {}
+    }
+    var bekeken = laadBekeken();
+
+    function markeer(href) {
+        if (bekeken.indexOf(href) < 0) { bekeken.push(href); bewaarBekeken(); }
+    }
+
+    function toonVoortgang() {
+        blokken.forEach(function (labo) {
+            var chips = labo.querySelectorAll('.chip');
+            var n = 0;
+            chips.forEach(function (c) {
+                var gezien = bekeken.indexOf(c.getAttribute('href')) > -1;
+                c.classList.toggle('bekeken', gezien);
+                if (gezien) n++;
+            });
+            labo.style.setProperty('--v', chips.length ? n / chips.length : 0);
+            var a = labo.querySelector('.aantal');
+            if (!a.dataset.basis) a.dataset.basis = a.textContent;
+            a.textContent = a.dataset.basis + (n ? ' \u00B7 ' + n + ' bekeken' : '');
+        });
+    }
+
+    document.querySelectorAll('.chip').forEach(function (c) {
+        c.addEventListener('click', function (e) {
+            e.preventDefault();
+            markeer(c.getAttribute('href'));
+            gaNaar(c.getAttribute('href'));
+        });
+    });
+
+    document.getElementById('wisKnop').addEventListener('click', function () {
+        bekeken = [];
+        bewaarBekeken();
+        toonVoortgang();
+        toast('Voortgang gewist');
+    });
+
+    toonVoortgang();
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') toonVoortgang();
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) toonVoortgang(); });
+
+    // ----- Zoekpalet (Ctrl/Cmd + K of /) -----
+    var palet = document.getElementById('palet');
+    var paletInput = document.getElementById('paletInput');
+    var paletLijst = document.getElementById('paletLijst');
+    var zoekKnop = document.getElementById('zoekKnop');
+    var items = [], getoond = [], sel = 0, paletOpen = false, vorigeFocus = null;
+
+    if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) {
+        zoekKnop.querySelector('kbd').textContent = '\u2318 K';
+    }
+
+    function bouwItems() {
+        items = [];
+        blokken.forEach(function (labo) {
+            var laboTitel = labo.querySelector('h2').textContent.trim();
+            var nr = labo.querySelector('.nummer').textContent.trim();
+            labo.querySelectorAll('.chip').forEach(function (c) {
+                var href = c.getAttribute('href');
+                var titel = c.textContent.replace('\u2713', '').trim();
+                items.push({
+                    href: href, titel: titel, labo: laboTitel, nr: nr,
+                    gezien: bekeken.indexOf(href) > -1,
+                    zoek: (laboTitel + ' ' + titel + ' ' + href).toLowerCase()
+                });
+            });
+        });
+    }
+
+    function markeerSelectie() {
+        paletLijst.querySelectorAll('a').forEach(function (a, i) {
+            a.setAttribute('aria-selected', i === sel ? 'true' : 'false');
+            if (i === sel) a.scrollIntoView({ block: 'nearest' });
+        });
+    }
+
+    function renderPalet() {
+        var q = paletInput.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+        getoond = items.filter(function (i) {
+            return q.every(function (t) { return i.zoek.indexOf(t) > -1; });
+        });
+        paletLijst.textContent = '';
+
+        if (!getoond.length) {
+            var leeg = document.createElement('li');
+            leeg.className = 'leeg';
+            leeg.setAttribute('role', 'presentation');
+            leeg.textContent = 'Niets gevonden. Probeer "labo 2".';
+            paletLijst.appendChild(leeg);
+            return;
+        }
+
+        sel = Math.min(sel, getoond.length - 1);
+
+        getoond.forEach(function (i, idx) {
+            var li = document.createElement('li');
+            li.setAttribute('role', 'presentation');
+            var a = document.createElement('a');
+            a.href = i.href;
+            a.setAttribute('role', 'option');
+
+            var n = document.createElement('span');
+            n.className = 'n';
+            n.textContent = i.nr;
+
+            var t = document.createElement('span');
+            t.className = 't';
+            t.textContent = i.titel;
+            var klein = document.createElement('small');
+            klein.textContent = i.labo;
+            t.appendChild(klein);
+
+            a.appendChild(n);
+            a.appendChild(t);
+
+            if (i.gezien) {
+                var v = document.createElement('span');
+                v.className = 'v';
+                v.textContent = '\u2713';
+                a.appendChild(v);
+            }
+
+            a.addEventListener('mousemove', function () {
+                if (sel !== idx) { sel = idx; markeerSelectie(); }
+            });
+
+            li.appendChild(a);
+            paletLijst.appendChild(li);
+        });
+
+        markeerSelectie();
+    }
+
+    function openPalet() {
+        if (paletOpen) return;
+        paletOpen = true;
+        vorigeFocus = document.activeElement;
+        bouwItems();
+        paletInput.value = '';
+        sel = 0;
+        renderPalet();
+        palet.classList.add('open');
+        palet.setAttribute('aria-hidden', 'false');
+        document.documentElement.style.overflow = 'hidden';
+        paletInput.focus();
+    }
+
+    function sluitPalet() {
+        if (!paletOpen) return;
+        paletOpen = false;
+        palet.classList.remove('open');
+        palet.setAttribute('aria-hidden', 'true');
+        document.documentElement.style.overflow = '';
+        paletInput.blur();
+        if (vorigeFocus && vorigeFocus !== document.body && vorigeFocus.focus) vorigeFocus.focus();
+    }
+
+    function verplaats(d) {
+        if (!getoond.length) return;
+        sel = (sel + d + getoond.length) % getoond.length;
+        markeerSelectie();
+    }
+
+    paletInput.addEventListener('input', function () { sel = 0; renderPalet(); });
+
+    paletInput.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); verplaats(1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); verplaats(-1); }
+        else if (e.key === 'Enter') {
+            e.preventDefault();
+            var it = getoond[sel];
+            if (it) { markeer(it.href); sluitPalet(); gaNaar(it.href); }
+        }
+    });
+
+    paletLijst.addEventListener('click', function (e) {
+        var a = e.target.closest('a');
+        if (!a) return;
+        e.preventDefault();
+        markeer(a.getAttribute('href'));
+        sluitPalet();
+        gaNaar(a.getAttribute('href'));
+    });
+
+    palet.addEventListener('mousedown', function (e) { if (e.target === palet) sluitPalet(); });
+    zoekKnop.addEventListener('click', openPalet);
+
+    // ----- Easter eggs -----
+    function confetti(aantal) {
+        if (minderBeweging) return;
+        var c = document.createElement('canvas');
+        c.className = 'confetti';
+        document.body.appendChild(c);
+        var ctx = c.getContext('2d');
+        var dpr = window.devicePixelRatio || 1;
+        var W = window.innerWidth, H = window.innerHeight;
+        c.width = W * dpr; c.height = H * dpr;
+        ctx.scale(dpr, dpr);
+
+        var kleuren = ['#E40613', '#B8050F', '#1E2126', '#FF5A63', '#FFC2C6'];
+        var deeltjes = [];
+        for (var i = 0; i < (aantal || 170); i++) {
+            var links = i % 2 === 0;
+            var hoek = (links ? -60 : -120) * Math.PI / 180 + (Math.random() - .5) * .9;
+            var snelheid = 12 + Math.random() * 12;
+            deeltjes.push({
+                x: links ? W * .12 : W * .88,
+                y: H + 10,
+                vx: Math.cos(hoek) * snelheid * (links ? 1 : 1),
+                vy: Math.sin(hoek) * snelheid,
+                w: 6 + Math.random() * 8,
+                h: 4 + Math.random() * 6,
+                rot: Math.random() * 6,
+                vr: (Math.random() - .5) * .35,
+                kleur: kleuren[Math.floor(Math.random() * kleuren.length)]
+            });
+        }
+
+        var start = performance.now();
+        (function frame(nu) {
+            ctx.clearRect(0, 0, W, H);
+            var levend = 0;
+            deeltjes.forEach(function (d) {
+                d.vy += .32; d.vx *= .992; d.vy *= .992;
+                d.x += d.vx; d.y += d.vy; d.rot += d.vr;
+                if (d.y < H + 30) levend++;
+                ctx.save();
+                ctx.translate(d.x, d.y);
+                ctx.rotate(d.rot);
+                ctx.fillStyle = d.kleur;
+                ctx.fillRect(-d.w / 2, -d.h / 2, d.w, d.h);
+                ctx.restore();
+            });
+            if (levend > 0 && nu - start < 6000) requestAnimationFrame(frame);
+            else c.remove();
+        })(start);
+    }
+
+    var regenBezig = false;
+    function codeRegen() {
+        if (minderBeweging || regenBezig) return;
+        regenBezig = true;
+        var doos = document.createElement('div');
+        doos.className = 'regen';
+        hero.insertBefore(doos, hero.firstChild);
+        var symbolen = ['</>', '{ }', '();', '=>', '[ ]', '&&', '#', '0', '1', '<div>', '</p>', 'css', 'git'];
+        var H = hero.offsetHeight;
+        for (var i = 0; i < 48; i++) {
+            var sp = document.createElement('span');
+            sp.textContent = symbolen[Math.floor(Math.random() * symbolen.length)];
+            sp.style.left = (Math.random() * 100) + '%';
+            sp.style.fontSize = (.9 + Math.random() * 1.5) + 'rem';
+            sp.animate([
+                { transform: 'translateY(-40px)', opacity: 0 },
+                { opacity: 1, offset: .15 },
+                { transform: 'translateY(' + (H + 40) + 'px)', opacity: .5 }
+            ], { duration: 2200 + Math.random() * 2200, delay: Math.random() * 1800, easing: 'cubic-bezier(.4,0,1,1)', fill: 'both' });
+            doos.appendChild(sp);
+        }
+        setTimeout(function () { doos.remove(); regenBezig = false; }, 6500);
+    }
+
+    var rolBezig = false;
+    function barrelRoll() {
+        toast('Do a barrel roll! \uD83C\uDF00');
+        if (minderBeweging || rolBezig) return;
+        rolBezig = true;
+        var root = document.documentElement;
+        root.style.overflow = 'hidden';
+        document.body.style.transformOrigin = '50% ' + (window.scrollY + window.innerHeight / 2) + 'px';
+        var a = document.body.animate(
+            [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+            { duration: 1400, easing: 'cubic-bezier(.6,0,.3,1)' }
+        );
+        a.onfinish = function () {
+            root.style.overflow = paletOpen ? 'hidden' : '';
+            document.body.style.transformOrigin = '';
+            rolBezig = false;
+        };
+    }
+
+    // 5x klikken op het VIVES-label
+    var klikken = 0, klikTimer;
+    document.querySelector('.school').addEventListener('click', function () {
+        klikken++;
+        clearTimeout(klikTimer);
+        klikTimer = setTimeout(function () { klikken = 0; }, 1500);
+        if (klikken >= 5) {
+            klikken = 0;
+            codeRegen();
+            toast('Build succeeded: 0 errors, 42 warnings \uD83D\uDE05');
+        }
+    });
+
+    // Toetsen: sneltoetsen, Konami-code en woorden intypen
+    var konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    var konamiPos = 0, buffer = '';
+
+    document.addEventListener('keydown', function (e) {
+        if (!e.key) return;
+        var sleutel = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+
+        if ((e.ctrlKey || e.metaKey) && sleutel === 'k') {
+            e.preventDefault();
+            if (paletOpen) sluitPalet(); else openPalet();
+            return;
+        }
+
+        if (paletOpen) {
+            if (e.key === 'Escape') sluitPalet();
+            return;
+        }
+
+        var tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+        if (sleutel === '/') { e.preventDefault(); openPalet(); return; }
+
+        // Konami-code
+        if (sleutel === konami[konamiPos]) {
+            konamiPos++;
+            if (konamiPos === konami.length) {
+                konamiPos = 0;
+                confetti(220);
+                toast('Cheat code geactiveerd: +30 levens \uD83C\uDFAE');
+            }
+        } else {
+            konamiPos = (sleutel === konami[0]) ? 1 : 0;
+        }
+
+        // Woorden intypen
+        if (e.key.length === 1) {
+            buffer = (buffer + sleutel).slice(-12);
+            if (buffer.slice(-4) === 'roll') { buffer = ''; barrelRoll(); }
+            else if (buffer.slice(-4) === 'sudo') { buffer = ''; toast('Levi is not in the sudoers file. This incident will be reported. \uD83D\uDE94'); }
+            else if (buffer.slice(-5) === 'vives') { buffer = ''; confetti(120); toast('Vives voor altijd \uD83D\uDD34'); }
+        }
+    });
+
+    // Een knipoog voor wie de console opent
+    if (window.console && console.log) {
+        console.log('%cHey Levi \uD83D\uDC4B', 'font:800 22px sans-serif;color:#E40613');
+        console.log('Er zitten geheimpjes op deze pagina. Tip: Konami-code, 5x klikken op VIVES, of typ een woord\u2026');
+    }
+
+    /* =====================================================
+       Donkere modus, 3D-tilt, live voorbeeld en de rode wipe
+       ===================================================== */
+
+    var kanZweven = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    // ----- Donkere modus -----
+    var THEMA_SLEUTEL = 'labo-thema';
+    var themaKnop = document.getElementById('themaKnop');
+
+    function huidigThema() {
+        return document.documentElement.getAttribute('data-thema') === 'donker' ? 'donker' : 'licht';
+    }
+
+    function themaIcoon() {
+        var donker = huidigThema() === 'donker';
+        themaKnop.textContent = donker ? '\u2600\uFE0F' : '\uD83C\uDF19';
+        themaKnop.setAttribute('aria-pressed', donker ? 'true' : 'false');
+    }
+
+    themaIcoon();
+
+    function zetThemaNu(nieuw) {
+        document.documentElement.setAttribute('data-thema', nieuw);
+        try { localStorage.setItem(THEMA_SLEUTEL, nieuw); } catch (e) {}
+        themaIcoon();
+    }
+
+    themaKnop.addEventListener('click', function (e) {
+        var nieuw = huidigThema() === 'donker' ? 'licht' : 'donker';
+
+        if (minderBeweging || !document.startViewTransition) { zetThemaNu(nieuw); return; }
+
+        var x = e.clientX, y = e.clientY;
+        var straal = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+        var overgang = document.startViewTransition(function () { zetThemaNu(nieuw); });
+        overgang.ready.then(function () {
+            document.documentElement.animate(
+                { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + straal + 'px at ' + x + 'px ' + y + 'px)'] },
+                { duration: 550, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
+            );
+        });
+    });
+
+    // ----- 3D-tilt op de labo-kaarten -----
+    if (kanZweven && !minderBeweging) {
+        blokken.forEach(function (labo) {
+            labo.addEventListener('pointermove', function (e) {
+                var r = labo.getBoundingClientRect();
+                var px = (e.clientX - r.left) / r.width - 0.5;
+                var py = (e.clientY - r.top) / r.height - 0.5;
+                labo.style.setProperty('--ry', (px * 6).toFixed(2) + 'deg');
+                labo.style.setProperty('--rx', (py * -6).toFixed(2) + 'deg');
+                labo.style.setProperty('--ty', '-4px');
+            });
+            labo.addEventListener('pointerleave', function () {
+                labo.style.setProperty('--ry', '0deg');
+                labo.style.setProperty('--rx', '0deg');
+                labo.style.setProperty('--ty', '0px');
+            });
+        });
+    }
+
+    // ----- Live voorbeeld bij het hoveren van een knop -----
+    var voorbeeld = document.getElementById('voorbeeld');
+    var voorbeeldFrame = document.getElementById('voorbeeldFrame');
+    var voorbeeldTitel = document.getElementById('voorbeeldTitel');
+    var voorbeeldTimer = null;
+
+    function toonVoorbeeld(chip) {
+        var href = chip.getAttribute('href');
+        if (voorbeeldFrame.getAttribute('data-src') !== href) {
+            voorbeeldFrame.src = href;
+            voorbeeldFrame.setAttribute('data-src', href);
+        }
+        voorbeeldTitel.textContent = chip.textContent.replace('\u2713', '').trim();
+
+        var r = chip.getBoundingClientRect();
+        var boven = r.top > 240;
+        var x = Math.min(Math.max(r.left + r.width / 2 - 150, 12), window.innerWidth - 312);
+        var y = boven ? r.top - 199 : r.bottom + 10;
+
+        voorbeeld.style.left = x + 'px';
+        voorbeeld.style.top = y + 'px';
+        voorbeeld.style.setProperty('--oorsprong', boven ? '50% 100%' : '50% 0%');
+        voorbeeld.classList.add('zichtbaar');
+    }
+
+    function verbergVoorbeeld() {
+        clearTimeout(voorbeeldTimer);
+        voorbeeld.classList.remove('zichtbaar');
+    }
+
+    if (kanZweven && !minderBeweging && voorbeeld) {
+        document.querySelectorAll('.chip').forEach(function (chip) {
+            chip.addEventListener('pointerenter', function () {
+                clearTimeout(voorbeeldTimer);
+                voorbeeldTimer = setTimeout(function () { toonVoorbeeld(chip); }, 280);
+            });
+            chip.addEventListener('pointerleave', verbergVoorbeeld);
+        });
+        window.addEventListener('scroll', verbergVoorbeeld, { passive: true });
+    } else if (voorbeeld) {
+        voorbeeld.remove();
+    }
+
+    // ----- Rode wipe bij het openen van een opdracht -----
+    var wipeEl = document.getElementById('wipe');
+
+    function gaNaar(href) {
+        if (minderBeweging || !wipeEl.animate) { location.href = href; return; }
+        verbergVoorbeeld();
+        var anim = wipeEl.animate(
+            [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+            { duration: 420, easing: 'cubic-bezier(.6,0,.2,1)', fill: 'forwards' }
+        );
+        anim.onfinish = function () { location.href = href; };
+    }
+
+</script>
+
 </body>
 </html>
