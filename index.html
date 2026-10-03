@@ -187,8 +187,8 @@
         .band {
             height: 20px;
             background: linear-gradient(135deg,
-            var(--rood-donker) 25%, var(--rood) 25% 50%,
-            var(--rood-donker) 50% 75%, var(--rood) 75%) 0 0 / 40px 40px;
+                var(--rood-donker) 25%, var(--rood) 25% 50%,
+                var(--rood-donker) 50% 75%, var(--rood) 75%) 0 0 / 40px 40px;
             animation: band 2.4s linear infinite;
         }
 
@@ -366,8 +366,8 @@
             flex-wrap: wrap;
             gap: 10px;
             background:
-                    linear-gradient(var(--rood), var(--rood)) top left / 100% 4px no-repeat,
-                    var(--opp);
+                linear-gradient(var(--rood), var(--rood)) top left / 100% 4px no-repeat,
+                var(--opp);
         }
 
         /* ---------- Kleine knoppen ---------- */
@@ -1419,6 +1419,10 @@
     // ----- Rode wipe bij het openen van een opdracht -----
     var wipeEl = document.getElementById('wipe');
 
+    function wipeResetten() {
+        wipeEl.getAnimations().forEach(function (a) { a.cancel(); });
+    }
+
     function gaNaar(href) {
         if (minderBeweging || !wipeEl.animate) { location.href = href; return; }
         verbergVoorbeeld();
@@ -1428,6 +1432,13 @@
         );
         anim.onfinish = function () { location.href = href; };
     }
+
+    // Als je met de browser-terugknop op deze pagina terugkomt, haalt de
+    // browser soms de oude pagina uit cache i.p.v. ze opnieuw te laden.
+    // Zonder dit zou de rode wipe dan nog "voltooid" op het scherm staan.
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) wipeResetten();
+    });
 
 </script>
 
