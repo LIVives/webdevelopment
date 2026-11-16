@@ -1,0 +1,42 @@
+body{
+    width: 95%;
+    margin: auto;
+    font-family: verdana, geneva, helvetica, arial, sans-serif;
+
+}
+section > header{
+    background-image: url("../Opgave nature blog/header.jpg");
+    height: 80px;
+}
+section > header > h1{
+    color :white;
+    padding: 5px 7px;
+}
+section > nav{
+    background-color: #444444;
+    padding: 4px;
+}
+section > nav > a{
+    color: #55f88c;
+    text-decoration: none;
+    font-weight:600;
+}
+section > div > article{
+    background-color: #eeeeee;
+    padding-top: 25px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin: 5px;
+}
+section > div > article > header{
+    color: #444444;
+    text-decoration: underline;
+    font-size: 22px;
+}
+section > div > article > p{
+    padding-top: 30px;
+}
+section > footer{
+    padding-top: 5px;
+    padding-bottom: 3px;
+}

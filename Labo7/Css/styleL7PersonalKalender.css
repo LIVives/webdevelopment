@@ -1,0 +1,35 @@
+table {
+    border-collapse: collapse;
+    font-family: "Times New Roman", serif;
+    font-size: 20px;
+}
+
+td, th {
+    border: 2px dotted black;
+    padding: 4px 6px;
+    text-align: left;
+}
+
+thead tr:first-child th {
+    background: rgb(170, 170, 200);
+    text-align: center;
+    font-size: 24px;
+}
+
+thead tr:last-child th {
+    background: rgb(35, 37, 70);
+    color: rgb(200, 190, 240);
+}
+
+td:first-child, td:last-child {
+    background: rgb(255, 220, 220);
+}
+
+td.andere {
+    background: rgb(200, 200, 200);
+    color: #999;
+}
+
+td.feestdag {
+    background: rgb(250, 120, 120);
+}
