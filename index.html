@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Labo-opdrachten Home Page</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23E40613'/><path d='M16 15 L32 44 L48 15' fill='none' stroke='white' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/></svg>" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23E40613'/%3E%3Cpath%20d='M16%2015%20L32%2044%20L48%2015'%20fill='none'%20stroke='white'%20stroke-width='9'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E" type="image/svg+xml">
     <script>
         document.documentElement.classList.add('js');
         (function () {
@@ -16,7 +16,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
     <style>
         :root {
             --rood: #E40613;
@@ -56,12 +56,6 @@
             --schaduw-hover1: rgba(0, 0, 0, .45);
             --schaduw-hover2: rgba(0, 0, 0, .55);
             color-scheme: dark;
-        }
-
-        /* Cirkelvormige overgang bij het wisselen van thema */
-        ::view-transition-old(root), ::view-transition-new(root) {
-            animation: none;
-            mix-blend-mode: normal;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -187,8 +181,8 @@
         .band {
             height: 20px;
             background: linear-gradient(135deg,
-                var(--rood-donker) 25%, var(--rood) 25% 50%,
-                var(--rood-donker) 50% 75%, var(--rood) 75%) 0 0 / 40px 40px;
+            var(--rood-donker) 25%, var(--rood) 25% 50%,
+            var(--rood-donker) 50% 75%, var(--rood) 75%) 0 0 / 40px 40px;
             animation: band 2.4s linear infinite;
         }
 
@@ -304,10 +298,15 @@
             line-height: 1.15;
         }
 
+        .laboNaam { display: block; }
+
         .aantal {
             display: block;
             color: var(--tekst-zwak);
+            font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
             font-size: .95rem;
+            font-weight: 400;
+            line-height: 1.6;
             transition: color .25s ease;
         }
 
@@ -366,8 +365,8 @@
             flex-wrap: wrap;
             gap: 10px;
             background:
-                linear-gradient(var(--rood), var(--rood)) top left / 100% 4px no-repeat,
-                var(--opp);
+                    linear-gradient(var(--rood), var(--rood)) top left / 100% 4px no-repeat,
+                    var(--opp);
         }
 
         /* ---------- Kleine knoppen ---------- */
@@ -736,6 +735,10 @@
         <span>Ga naar</span>
         <a href="#labo2">Labo 2</a>
         <a href="#labo3">Labo 3</a>
+        <a href="#labo4">Labo 4</a>
+        <a href="#labo5">Labo 5</a>
+        <a href="#labo6">Labo 6</a>
+        <a href="#labo7">Labo 7</a>
         <button class="zoek" id="zoekKnop" type="button" aria-label="Zoek een opdracht">Zoek een opdracht <kbd>Ctrl K</kbd></button>
         <button class="thema-knop" id="themaKnop" type="button" aria-label="Wissel tussen licht en donker thema">🌙</button>
     </div>
@@ -747,10 +750,7 @@
     <details class="labo" id="labo2">
         <summary>
             <span class="nummer" aria-hidden="true">2</span>
-            <span class="titel">
-                <h2>Labo 2</h2>
-                <span class="aantal">6 pagina's</span>
-            </span>
+            <h2 class="titel"><span class="laboNaam">Labo 2</span><span class="aantal">6 pagina's</span></h2>
             <span class="pijl" aria-hidden="true"></span>
         </summary>
         <div class="opdrachten">
@@ -767,10 +767,7 @@
     <details class="labo" id="labo3">
         <summary>
             <span class="nummer" aria-hidden="true">3</span>
-            <span class="titel">
-                <h2>Labo 3</h2>
-                <span class="aantal">4 pagina</span>
-            </span>
+            <h2 class="titel"><span class="laboNaam">Labo 3</span><span class="aantal">4 pagina's</span></h2>
             <span class="pijl" aria-hidden="true"></span>
         </summary>
         <div class="opdrachten">
@@ -785,10 +782,7 @@
     <details class="labo" id="labo4">
         <summary>
             <span class="nummer" aria-hidden="true">4</span>
-            <span class="titel">
-                <h2>Labo 4</h2>
-                <span class="aantal">1 pagina</span>
-            </span>
+            <h2 class="titel"><span class="laboNaam">Labo 4</span><span class="aantal">1 pagina</span></h2>
             <span class="pijl" aria-hidden="true"></span>
         </summary>
         <div class="opdrachten">
@@ -800,15 +794,41 @@
     <details class="labo" id="labo5">
         <summary>
             <span class="nummer" aria-hidden="true">5</span>
-            <span class="titel">
-                <h2>Labo 5</h2>
-                <span class="aantal">2 pagina</span>
-            </span>
+            <h2 class="titel"><span class="laboNaam">Labo 5</span><span class="aantal">2 pagina's</span></h2>
             <span class="pijl" aria-hidden="true"></span>
         </summary>
         <div class="opdrachten">
             <a class="chip" href="Labo5/Labo5_opdracht6.html">Opdracht 6 - css</a>
-            <a class="chip" href="Labo5/Labo5_opdracht7.html">Opdracht 7 - em & ex</a>
+            <a class="chip" href="Labo5/Labo5_opdracht7.html">Opdracht 7 - em &amp; ex</a>
+        </div>
+    </details>
+
+    <!-- ===== LABO 6 ===== -->
+    <details class="labo" id="labo6">
+        <summary>
+            <span class="nummer" aria-hidden="true">6</span>
+            <h2 class="titel"><span class="laboNaam">Labo 6</span><span class="aantal">4 pagina's</span></h2>
+            <span class="pijl" aria-hidden="true"></span>
+        </summary>
+        <div class="opdrachten">
+            <a class="chip" href="Labo6/Labo6_opdracht1.html">Opdracht 1</a>
+            <a class="chip" href="Labo6/Labo6_opdracht3.html">Opdracht 3</a>
+            <a class="chip" href="Labo6/Labo6_opdracht5.html">Opdracht 5</a>
+            <a class="chip" href="Labo6/Labo6_opdracht6.html">Opdracht 6</a>
+        </div>
+    </details>
+
+    <!-- ===== LABO 7 ===== -->
+    <details class="labo" id="labo7">
+        <summary>
+            <span class="nummer" aria-hidden="true">7</span>
+            <h2 class="titel"><span class="laboNaam">Labo 7</span><span class="aantal">3 pagina's</span></h2>
+            <span class="pijl" aria-hidden="true"></span>
+        </summary>
+        <div class="opdrachten">
+            <a class="chip" href="Labo7/Labo7_opdrachtPersonalHomepage.html">Opdracht 1 - Personal Homepage</a>
+            <a class="chip" href="Labo7/Labo7_opdracht2.html">Opdracht 2 - Homepage + tabel</a>
+            <a class="chip" href="Labo7/Labo7_opdrachtKalender.html">Opdracht 3 - Kalender</a>
         </div>
     </details>
 
@@ -1053,7 +1073,7 @@
     function bouwItems() {
         items = [];
         blokken.forEach(function (labo) {
-            var laboTitel = labo.querySelector('h2').textContent.trim();
+            var laboTitel = labo.querySelector('.laboNaam').textContent.trim();
             var nr = labo.querySelector('.nummer').textContent.trim();
             labo.querySelectorAll('.chip').forEach(function (c) {
                 var href = c.getAttribute('href');
@@ -1206,7 +1226,7 @@
             deeltjes.push({
                 x: links ? W * .12 : W * .88,
                 y: H + 10,
-                vx: Math.cos(hoek) * snelheid * (links ? 1 : 1),
+                vx: Math.cos(hoek) * snelheid,
                 vy: Math.sin(hoek) * snelheid,
                 w: 6 + Math.random() * 8,
                 h: 4 + Math.random() * 6,
@@ -1365,6 +1385,15 @@
     }
 
     themaIcoon();
+
+    // Cirkelvormige overgang bij het wisselen van thema.
+    // Deze CSS wordt via JavaScript toegevoegd, omdat de W3C CSS-validator
+    // de ::view-transition-pseudo-elementen nog niet kent.
+    var overgangStijl = document.createElement('style');
+    overgangStijl.textContent =
+        '::view-transition-old(root), ::view-transition-new(root) {' +
+        'animation: none; mix-blend-mode: normal; }';
+    document.head.appendChild(overgangStijl);
 
     function zetThemaNu(nieuw) {
         document.documentElement.setAttribute('data-thema', nieuw);
